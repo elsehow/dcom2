@@ -1,6 +1,7 @@
 {
   "main": "index.js",
   "scripts": {
+    "generate-keys":"node -pe \"JSON.stringify(require('ssb-keys').generate())" > keys.json\",
     "watch": "watchify -vd -p browserify-hmr src/index.js -o static/bundle.js",
     "start": "ecstatic static --cache 1 --port 9999",
     "dev": "npm run watch & npm start",
@@ -12,6 +13,7 @@
     "browserify-hmr": "^0.3.1",
     "ecstatic": "^1.4.0",
     "html-inline": "^1.2.0",
+    "ssb-keys": "^5.0.0",
     "watchify": "^3.7.0"
   },
   "dependencies": {
@@ -19,6 +21,7 @@
     "crypto-browserify": "^3.11.0",
     "lodash": "^4.6.1",
     "main-loop": "^3.2.0",
+    "md5": "^2.1.0",
     "redux": "^3.3.1",
     "rsa-json": "^0.2.0",
     "socket.io-client": "^1.4.5",

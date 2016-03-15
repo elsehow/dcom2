@@ -1,9 +1,7 @@
-
-
-
 var redux = require('redux')
 
 function appStore (state = {
+  keys: {},
   messages: [],
 }, action) {
   switch (action.type) {
