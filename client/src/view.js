@@ -1,21 +1,30 @@
 var h = require('virtual-dom/h')
+var md5 = require('md5')
 
 module.exports = (store) => {
 
   // expose stuff for browser repl
   //window.createKeys = require('rsa-json')
-  window.l = require('./library-of-babel.js')
+  window.store = store
+  window.l = require('./library-of-babel')
 
   // a render fn that returns hyperscript
   return function render (state) {
     return h('div', [
-      h('div.messages', state.messages.map(messageDiv)),
-      //h('h1', `clicked ${state} times`),
+      // posts
+      h('div.posts', 
+        state.posts.map(postDiv)),
+      // input box
       inputBox(),
+      // user list
+      h('div.userlist', [
+        h('p', 'userlist'),
+        state.userlist.map(md5).join(', '),
+      ])
     ])
   }
 
-  function messageDiv (m) {
+  function postDiv (m) {
     return h('div', m)
   }
 
@@ -38,8 +47,8 @@ module.exports = (store) => {
 
   function sendMessage (m) {
     store.dispatch({
-      type:'send-message', 
-      message: m
+      type:'send-post', 
+      text: m
     })
   }
 }
