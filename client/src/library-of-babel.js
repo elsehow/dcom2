@@ -33,8 +33,6 @@ function ack (pk, join) {
 // takes an array of public keys `pks`
 // and a string `text`
 function post (pks, text) {
-console.log('pks', pks)
-console.log('text', text)
   var ctexts = pks.map(pk => {
     return encrypt(pk, text)
   })
@@ -49,7 +47,6 @@ console.log('text', text)
 function decryptPost (pk, sk, post) {
   var pk_hash = md5(pk) 
   var my_ciphertext = post.value.ciphertexts[pk_hash]
-console.log('found cyphertext to decrypt', my_ciphertext)
   return decrypt(sk, my_ciphertext)
 }
 
@@ -66,21 +63,35 @@ function swarmlog () {
   })
 }
 
+// returns the most recent join event
+function lastJoin (log) {
+  var lastJoinChange = _
+    .chain(log)
+    .sortBy('seq')
+    .filter(m => m.value.type === 'join')
+    .last()
+    .value()
+    .change
+  // get all messages with this change
+  // and pick the one with the highest hash
+  return _
+    .chain(log)
+    .sortBy('key')
+    .last()
+    .value()
+}
+
 // 1. find the last join messages
 // 2. find all ack messages that cite it
 //    TODO (all messages should be of a > "change"
 function userlist (log) {
-  // find last join event
-  var last_join = _
-    .chain(log)
-    .filter(m => m.value.type === 'join')
-    .last()
-    .value()
+  var k = lastJoin(log).key
   // find all posts who's cause are this message
   return _
     .chain(log)
+    .sortBy('seq')
+    .filter(m => m.value.pk)
     .filter(m => {
-      var k = last_join.key
       return m.value.cause === k || m.key === k
     })
     .map(m => m.value.pk)
@@ -100,7 +111,11 @@ module.exports = {
   decryptPost: decryptPost,
   // swarmlog stuff
   swarmlog: swarmlog,
+  lastJoin:lastJoin,
   userlist: userlist,
+  // testing/debug
+  md5: md5,
+_: _,
 }
 
 

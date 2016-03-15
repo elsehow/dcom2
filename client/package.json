@@ -5,11 +5,14 @@
     "watch": "watchify -vd -p browserify-hmr src/index.js -o static/bundle.js",
     "start": "ecstatic static --cache 1 --port 9999",
     "dev": "npm run watch & npm start",
-    "build": "browserify src/index.js | java -jar compiler.jar --language_out=ES5 > static/bundle.js; html-inline -i static/index.html -o dist/index.html"
+    "build-closure": "browserify src/index.js | java -jar compiler.jar --language_out=ES5 > static/bundle.js",
+    "build": "browserify -t babelify src/index.js -o static/bundle.js",
+    "inline": "html-inline -i static/index.html -o dist/index.html"
   },
   "author": "elsehow",
   "license": "BSD-2-Clause",
   "devDependencies": {
+    "babelify": "^7.2.0",
     "browserify-hmr": "^0.3.1",
     "ecstatic": "^1.4.0",
     "html-inline": "^1.2.0",

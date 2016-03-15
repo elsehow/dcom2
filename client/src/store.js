@@ -1,5 +1,6 @@
 var redux = require('redux')
 var l = require('./library-of-babel')
+var _ = require('lodash')
 
 function appStore (state = {
   swarmlog: l.swarmlog(),
@@ -14,6 +15,7 @@ function appStore (state = {
     // generate a new keypair
     state.keys = l.keypair()
     // append a 'join' message to the log
+    console.log('sending JOIN!', l.md5(state.keys.public))
     var j = l.join(state.keys.public)
     state.swarmlog.append(j)
     return state
@@ -21,12 +23,19 @@ function appStore (state = {
   case 'send-ack':
     // if this join message is NOT mine,
     if (action.message.value.pk !== state.keys.public) {
-      // generate a new keypair
-      state.keys = l.keypair()
-      // append an 'ack' message to the log
-      var j = action.message
-      var a = l.ack(state.keys.public, j)
-      state.swarmlog.append(a)
+      // and it's newer than the last join we saw before this one)
+    console.log(
+      'hearing JOIN!', 
+      l.md5(action.message.value.pk), 
+      action.message.change,
+      action.message.seq)
+      //&& action.message.change > l.lastJoin(_.initial(state.messages))) {
+//      // generate a new keypair
+//      state.keys = l.keypair()
+//      // append an 'ack' message to the log
+//      var j = action.message
+//      var a = l.ack(state.keys.public, j)
+//      state.swarmlog.append(a)
     }
     return state
 
@@ -60,7 +69,6 @@ function appStore (state = {
 }
 
 function handle (store, message) {
-  console.log('new message,', message)
   // save message in our message store regardless
   store.dispatch({
     type: 'save-message',

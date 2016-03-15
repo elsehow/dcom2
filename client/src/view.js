@@ -17,10 +17,7 @@ module.exports = (store) => {
       // input box
       inputBox(),
       // user list
-      h('div.userlist', [
-        h('p', 'userlist'),
-        state.userlist.map(md5).join(', '),
-      ])
+      h('div.userlist', state.userlist.map(postDiv))
     ])
   }
 
