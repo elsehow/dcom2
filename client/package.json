@@ -1,0 +1,28 @@
+{
+  "main": "index.js",
+  "scripts": {
+    "watch": "watchify -vd -p browserify-hmr src/index.js -o static/bundle.js",
+    "start": "ecstatic static --cache 1 --port 9999",
+    "dev": "npm run watch & npm start",
+    "build": "browserify src/index.js | java -jar compiler.jar --language_out=ES5 > static/bundle.js; html-inline -i static/index.html -o dist/index.html"
+  },
+  "author": "elsehow",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "browserify-hmr": "^0.3.1",
+    "ecstatic": "^1.4.0",
+    "html-inline": "^1.2.0",
+    "watchify": "^3.7.0"
+  },
+  "dependencies": {
+    "buffer": "^4.5.0",
+    "crypto-browserify": "^3.11.0",
+    "lodash": "^4.6.1",
+    "main-loop": "^3.2.0",
+    "redux": "^3.3.1",
+    "rsa-json": "^0.2.0",
+    "socket.io-client": "^1.4.5",
+    "ud": "^3.0.1",
+    "virtual-dom": "^2.1.1"
+  }
+}
