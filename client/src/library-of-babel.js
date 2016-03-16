@@ -15,37 +15,9 @@ function decrypt (sk, buffStr) {
   return crypto.privateDecrypt(sk, buff).toString()
 }
 
-function join (pk) {
-  return {
-    type: 'join',
-    pk: pk,
-  }
-}
-
-function ack (pk, join) {
-  return {
-    type: 'ack',
-    pk: pk,
-    cause: join.key,
-  }
-}
-
-// takes an array of public keys `pks`
-// and a string `text`
-function post (pks, text) {
-  var ctexts = pks.map(pk => {
-    return encrypt(pk, text)
-  })
-  var hashed_pks = pks.map(md5)
-  var ciphertexts = _.zipObject(hashed_pks, ctexts)
-  return {
-    type: 'post',
-    ciphertexts: ciphertexts,
-  }
-}
 
 function decryptPost (pk, sk, post) {
-  var pk_hash = md5(pk) 
+  var pk_hash = md5(pk)
   var my_ciphertext = post.value.ciphertexts[pk_hash]
   return decrypt(sk, my_ciphertext)
 }
@@ -53,7 +25,6 @@ function decryptPost (pk, sk, post) {
 function swarmlog () {
   var log = require('swarmlog')
   var memdb = require('memdb')
-  
   return log({
     keys: require('../keys.json'),
     sodium: require('chloride/browser'),
@@ -63,23 +34,6 @@ function swarmlog () {
   })
 }
 
-// returns the most recent join event
-function lastJoin (log) {
-  var lastJoinChange = _
-    .chain(log)
-    .sortBy('seq')
-    .filter(m => m.value.type === 'join')
-    .last()
-    .value()
-    .change
-  // get all messages with this change
-  // and pick the one with the highest hash
-  return _
-    .chain(log)
-    .sortBy('key')
-    .last()
-    .value()
-}
 
 // 1. find the last join messages
 // 2. find all ack messages that cite it
@@ -104,14 +58,9 @@ module.exports = {
   keypair: keypair,
   encrypt: encrypt,
   decrypt: decrypt,
-  // message stuff
-  join: join,
-  ack: ack,
-  post: post,
   decryptPost: decryptPost,
   // swarmlog stuff
   swarmlog: swarmlog,
-  lastJoin:lastJoin,
   userlist: userlist,
   // testing/debug
   md5: md5,

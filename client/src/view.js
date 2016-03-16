@@ -10,18 +10,21 @@ module.exports = (store) => {
 
   // a render fn that returns hyperscript
   return function render (state) {
+      return h('div', state.chats.map(chatView))
+  }
+
+  function chatView (m) {
     return h('div', [
       // posts
-      h('div.posts', 
-        state.posts.map(postDiv)),
+      h('div.posts', m.posts.map(div)),
       // input box
       inputBox(),
       // user list
-      h('div.userlist', state.userlist.map(postDiv))
+      h('div.userlist', m.userlist.map(div))
     ])
   }
 
-  function postDiv (m) {
+  function div (m) {
     return h('div', m)
   }
 
