@@ -1,0 +1,64 @@
+* introduction
+** managing keys is hard
+*** keys are easy to mismanage
+*** leading to theft, social engineering
+*** or to losing/being locked out of one's identity
+** trusting centralized systems leads to all sorts of problems
+*** in a public keyserver, a resourceful actor can replace keys
+*** CSAs are not necessarily to be trusted
+**** can MiM someone with just a valid cert
+* forming a web of trust around gossip protocols
+** what are gossip protocols?
+*** examples in the wild
+** the application itself serves as one key
+** how they form a web of trust
+* pseudonymous chat with e2e encryption 
+** a public record of pseudonyms organized around chat rooms
+*** remember, we post all messages publically
+*** remember, CP (eventual consistency)
+** protocol
+*** join messages
+#+BEGIN_SRC js
+  {
+    type: 'join',
+    chat_id: 'some-unique-uuid',
+    chat_name: 'cookie discussion',-
+    identity: {
+      pubkey: '...',
+      handle: 'elsehow',
+      color: '#fff'
+    }
+  }
+
+#+END_SRC
+*** ack messages
+#+BEGIN_SRC js
+  {
+    type: 'ack',
+    link: 'join-message-uuid',
+    id: 'some-unique-uuid',
+    identity: {
+      pubkey: '...',
+      handle: 'mminsky',
+      color: '#ff0'
+    }
+  }
+
+#+END_SRC
+*** chat messages
+#+BEGIN_SRC js
+  {
+    type: 'chat',
+    link: 'last-message-uuid',
+    id: 'some-unique-uuid',
+    ciphertext: '.....',
+  }
+
+#+END_SRC
+** guarantees
+*** we always know to which pseudonyms we are addressing our messages
+* questions
+** TODO one approach is to have no persistent identities
+*** what are the advantages?
+*** what are the shortcomings?
+** TODO summary of contribution
